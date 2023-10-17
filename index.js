@@ -25,6 +25,7 @@ const run = async () => {
     const projectCollection = db.collection("projects");
     const reviewCollection = db.collection("reviews");
     const teamCollection = db.collection("teams");
+    const userCollection = db.collection("users");
     //
 
     //get all service
@@ -117,6 +118,34 @@ const run = async () => {
     app.get("/teams", async (req, res) => {
       const team = await teamCollection.find({}).toArray();
       res.send(team);
+    });
+
+    //users
+    app.get("/users", async (req, res) => {
+      const user = await userCollection.find({}).toArray();
+      console.log(user);
+      res.json(user);
+    });
+
+    //
+    app.post("/users", async (req, res) => {
+      const user = await userCollection.insertOne(req.body);
+      console.log(user);
+      res.json(user);
+    });
+
+    //
+    app.put("/users", async (req, res) => {
+      const user = req.body;
+      const filter = { email: user.email };
+      const options = { upsert: true };
+      const updateUser = { $set: user };
+      const result = await userCollection.updateOne(
+        filter,
+        updateUser,
+        options
+      );
+      res.json(result);
     });
 
     //
